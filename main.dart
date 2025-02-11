@@ -1,114 +1,48 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 
-void main() => runApp(ListView03());
+void main() => runApp(ListView01());
 
-//-- 1 --------------------------------------------------------------
-class ListView03 extends StatelessWidget{
-  const ListView03({super.key});
+class ListView01 extends StatelessWidget{
   @override
   Widget build(BuildContext context) => MaterialApp(
     home: HomePage(),
   );
 }
-//-- 2 --------------------------------------------------------------
-class HomePage extends StatefulWidget{
-  const HomePage({super.key});
-  @override
-  State<HomePage> createState() => HomePageState();
-}
-//-- 3 --------------------------------------------------------------
-class HomePageState extends State<HomePage>{
-  var rnd = Random();
-  var leadingIcons = [Icons.star, Icons.favorite, Icons.wifi,
-                      Icons.phone, Icons.settings];
-  var titleText = ['Star','Heart','Wi-Fi','Phone','Gear'];
-  var _switchWifi = true;
-  var _switchBluetooth = false;
+
+class HomePage extends StatelessWidget{
+  var items = ['วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์', 'วันอาทิตย์'];
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text('ListView03'),),
-    body: ListView.separated(
-      scrollDirection: Axis.vertical,
-      padding: EdgeInsets.all(20),
-
-      itemBuilder: (context, index) => buildListItem(context, index),
-
-      separatorBuilder: (context, index) => Divider(
-        thickness: 1,
-        color: Colors.blueGrey,
-        indent: 10, endIndent: 10,
+    appBar: AppBar(title: Text('ListView01'),),
+    body: ListView(
+      padding: EdgeInsets.symmetric(
+        vertical: 25, horizontal: 5
       ),
-
-      itemCount: titleText.length,
-    )
+      itemExtent: 80,
+      children: listViewChildren(),
+    ),
   );
 
-//-- 4 -------------------------------------------------------------
-Widget buildListItem(BuildContext ctx, int index) => ListTile(
-        leading: Icon(leadingIcons[index],size: 36,),
-        title: Text(titleText[index],textScaleFactor: 1.5,),
-        subtitle: Text('\$${10+rnd.nextInt(50)}',textScaleFactor: 1.2,),
-        trailing: Icon(Icons.arrow_forward_ios),
-        tileColor: Colors.black12,
-        contentPadding: EdgeInsets.symmetric( horizontal: 10, vertical: 5),
-        textColor: Colors.blue,
-        iconColor: Colors.green ,
+//--1 สร้าง index -------------------------------------------------------
+List<Widget> listViewChildren() =>
+  List.generate(items.length, (index) => listItem(items[index]));
 
-        onTap: () {
-            alert(ctx, 'เปิดดูรายการ ${titleText[index]}');
-        }
-);
+//--2 เพิ่ม item --------------------------------------------------------
+Widget listItem(String text) => Container(
+  padding: EdgeInsets.all(4),
+  margin: EdgeInsets.all(5),
+  alignment: Alignment.centerLeft,
+  decoration: BoxDecoration(
+            color: Colors.black12,
+            borderRadius: BorderRadius.circular(10)
+  ),
+  child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(text, textScaleFactor: 1.5,),
+            Icon(Icons.arrow_forward_ios)
+          ],
+  ),
+  );
 
-//-- 5 -------------------------------------------------------------
-Widget trailingWidget(BuildContext ctx, int index) {
-  var widgets = <Widget> [
-      Icon(Icons.arrow_forward_ios),
-      InkWell(
-          child: Icon(Icons.shopping_cart),
-          onTap: () {
-            alert(ctx, 'หยิบ ${titleText[index]}');
-          },
-      ),
-      Switch(
-              value: _switchWifi,
-              onChanged: (isOn) => setState(() {
-               _switchWifi = isOn;
-               var t = isOn.toString();
-               alert(ctx, '${titleText[index]} : $t');
-             })
-            ),
-
-      Switch(
-              value: _switchBluetooth,
-              onChanged: (isOn) => setState(() {
-               _switchBluetooth;
-               var t = (isOn) ? 'เปิด' : 'ปิด';
-               alert(ctx, '${titleText[index]} : $t');
-             })
-            ),
-
-      InkWell(
-        child: Icon(Icons.shopping_cart),
-        onTap: () {
-          alert(ctx, 'หยิบ ${titleText[index]} ใส่รถเเข็นแล้ว');
-        },
-      ),
-  ];
-
-  return widgets[index];
-}
-//-- 6 ----------------------------------------------------------
-void alert(BuildContext ctx, String msg) => showDialog(
-  context: ctx,
-  builder: (ctx) => AlertDialog(
-
-    content: Text(msg, textScaleFactor: 1.3,),
-    actions: [
-      TextButton(
-        child: Text('OK', textScaleFactor: 1.3),
-        onPressed: () => Navigator.of(ctx).pop()
-        )
-    ],
-  ));
 }
